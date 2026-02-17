@@ -19,13 +19,6 @@ import GoToTop from "../gototop/goToTop";
 
 import './category.styles.css';
 
-// OLD IMPORTS TO RENDER PAGES
-// import Vehicles from "./vehicles";
-// import Species from "./species";
-// import People from "./people";
-// import Starships from "./starships";
-// import Planets from "./planets";
-
 const Category = (props) => {
 
     // Grabbing :category from useParams

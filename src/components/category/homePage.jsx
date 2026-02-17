@@ -4,24 +4,16 @@ import { Link } from "react-router-dom";
 import GoToTop from "../gototop/goToTop";
 import Spinner from "../spinner/spinner";
 
-const Films = ({filmData}) => {
-
-    // Simulating load for slow internet and <Spinner /> rendering.
-    // const [image, showImage] = useState(false);
-    // useEffect(() => {
-    //     const timeout = setTimeout(() => {
-    //         showImage(true);
-    //     }, 3000)
-
-    //     return () => clearTimeout(timeout);
-    // }, [])
+const HomePage = ({filmData}) => {
 
     return(
         <Fragment>
             <br/>
             <h1 className="text-center"> The Super SIEM </h1>
-            <div className="d-sm-flex flex-wrap container-sm container-md container-lg container-xl container-xxl mt-5">
-                { filmData ? filmData.map((film) => {
+            <div className="text-center">
+                <h5> This is our Project </h5>
+                <h5> Please use the links to select a page </h5>
+                {/* { filmData ? filmData.map((film) => {
                     let filmId = ''
                     switch (film.episode_id) {
                         case 1: filmId = <img src='https://static.displate.com/460x640/displate/2017-02-28/da4a30fb53b2d14ea4504d8b5bf9f9ea.jpg' className="img-fluid" alt={film.title} />
@@ -58,11 +50,11 @@ const Films = ({filmData}) => {
 
                     )
                 }) : <Spinner/>
-                }
+                } */}
             </div>
             <GoToTop />
         </Fragment> 
    );
 };
 
-export default Films;
+export default HomePage;

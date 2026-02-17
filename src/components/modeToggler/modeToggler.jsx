@@ -18,12 +18,6 @@ const Toggler = () => {
             case 'dark-mode':      
                 setTheme('dark-mode');
                 break;
-            case 'sith-mode':
-                setTheme('sith-mode');
-                break;
-            case 'jedi-mode':
-                setTheme('jedi-mode');
-                break;
             default:
                 setTheme('dark-mode')
         }
@@ -42,8 +36,6 @@ const Toggler = () => {
                 <MDBDropdownMenu dark className="mt-2 ">
                     <MDBDropdownItem onClick={()=> toggleTheme('light-mode')} link >Light</MDBDropdownItem>
                     <MDBDropdownItem onClick={()=> toggleTheme('dark-mode')} link >Dark</MDBDropdownItem>
-                    <MDBDropdownItem onClick={()=> toggleTheme('jedi-mode')} link >Jedi</MDBDropdownItem>
-                    <MDBDropdownItem onClick={()=> toggleTheme('sith-mode')} link >Sith</MDBDropdownItem>
                 </MDBDropdownMenu>
             </MDBDropdown>
         </div>

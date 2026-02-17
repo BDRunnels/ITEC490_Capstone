@@ -99,7 +99,7 @@ const Navigation = () => {
           >
             { !isOpen ? (<MDBIcon icon='bars' fas  />) : (<MDBIcon fas icon="angle-double-down" />)}
           </MDBNavbarToggler>
-          <Link to='/' className='nav-link' onClick={() => setIsOpen(false)} > <img className='img-thumbnail' src='https://filmartgallery.com/cdn/shop/t/27/assets/star-wars-banner.jpeg?v=80624120874934922901668841836' alt='Banner' /> </Link>
+          <Link to='/' className='nav-link' onClick={() => setIsOpen(false)} > <img style={{ borderRadius: '5px', border: '3px solid white', height: '50px', width: '125px' }} src='https://www.comodo.com/images/what-are-the-three-characteristics-of-siem.png' alt='Banner' /> </Link>
           <MDBCollapse navbar id='navbarCollapse' show={isOpen} >
             <MDBNavbarNav className='mr-auto mb-2 mb-lg-0 justify-content-end '>
               <MDBNavbarItem>

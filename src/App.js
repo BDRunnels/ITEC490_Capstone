@@ -1,13 +1,15 @@
 import { useState, useEffect, Fragment } from "react";
 import { Routes, Route } from "react-router-dom";
 
+import HomePage from "./components/category/homePage";
 import Navigation from "./components/navigation/navigation";
-import Films from "./components/category/films";
 import Episode from "./components/episode/episode";
 import Footer from "./components/footer/footer";
+import CVE from "./components/cve/cve";
 
 import Category from "./components/category/category";
 import Toggler from "./components/modeToggler/modeToggler";
+
 
 const DATA_URL = 'https://swapi.py4e.com/api'
 
@@ -18,6 +20,9 @@ const App = () => {
     const [ starshipData, setStarshipData ] = useState([]);
     const [ speciesData, setSpeciesData ] = useState([]);
     const [ vehicleData, setVehicleData ] = useState([]);
+    
+    // 490
+    const [ cveData, setCve] = useState([]);
 
     // Fetching Film Data
     async function fetchFilmsData () {
@@ -142,6 +147,18 @@ const App = () => {
         };
     };
 
+    async function fetchCVEs () {
+        try {
+            const response = await fetch("https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=10")
+            if (!response.ok) throw new Error("Failed to fetch CVEs");
+            const translatedData = await response.json();
+            setCve(translatedData.vulnerabilities)
+
+        } catch (error) {
+            console.log('error fetching CVEs', error);
+        }
+    }
+
     useEffect(() => {
         fetchFilmsData();
         fetchPeopleData();
@@ -149,7 +166,7 @@ const App = () => {
         fetchSpeciesData();
         fetchStarshipData();
         fetchVehicleData();
-
+        fetchCVEs();
     }, []);
 
     return (
@@ -157,7 +174,7 @@ const App = () => {
             <Navigation />
             <Toggler />
             <Routes>
-                <Route path='/' element={<Films filmData={filmData}/>} />
+                <Route path='/' element={<HomePage />} />
                 <Route path='/films/:episodeId' element={<Episode 
                     filmData={filmData} 
                     peopleData={peopleData} 
@@ -175,6 +192,7 @@ const App = () => {
                     planetsData={planetsData}
                     />} 
                 />
+                <Route path='/CVE' element={<CVE cveData={cveData} />} />
             </Routes>
             <Footer />
         </Fragment>
