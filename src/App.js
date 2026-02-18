@@ -9,6 +9,7 @@ import CVE from "./components/cve/cve";
 
 import Category from "./components/category/category";
 import Toggler from "./components/modeToggler/modeToggler";
+import { inputAdornmentClasses } from "@mui/material";
 
 
 const DATA_URL = 'https://swapi.py4e.com/api'
