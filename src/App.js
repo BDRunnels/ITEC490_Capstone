@@ -149,10 +149,23 @@ const App = () => {
 
     async function fetchCVEs () {
         try {
-            const response = await fetch("https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=10")
-            if (!response.ok) throw new Error("Failed to fetch CVEs");
-            const translatedData = await response.json();
-            setCve(translatedData.vulnerabilities)
+
+            // const response = await fetch("https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=10")
+            // const translatedData = await response.json();
+            // setCve(translatedData.vulnerabilities)
+
+            // Initializing Page Count for API
+            let pageCount = 1;
+            // Initializing empty array to hold contents of API (10 results per page)
+            let cveArray = []
+            // For Loop to access all API elements
+            
+            const response = await fetch("https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=Microsoft Outlook&keywordExactMatch");
+            const translatedData =  await response.json();
+            cveArray.push(translatedData.vulnerabilities)
+            
+            
+            setCve(cveArray.flat());
 
         } catch (error) {
             console.log('error fetching CVEs', error);
@@ -160,12 +173,12 @@ const App = () => {
     }
 
     useEffect(() => {
-        fetchFilmsData();
-        fetchPeopleData();
-        fetchPlanetsData();
-        fetchSpeciesData();
-        fetchStarshipData();
-        fetchVehicleData();
+        // fetchFilmsData();
+        // fetchPeopleData();
+        // fetchPlanetsData();
+        // fetchSpeciesData();
+        // fetchStarshipData();
+        // fetchVehicleData();
         fetchCVEs();
     }, []);
 
