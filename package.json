@@ -15,7 +15,7 @@
     "sass": "^1.66.1",
     "styled-components": "^5.3.11"
   },
-  "name": "starwars_api_react",
+  "name": "capstone_siem",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -40,5 +40,6 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
-  }
+  },
+  "proxy": "https://services.nvd.nist.gov"
 }

@@ -1,20 +1,23 @@
+body.dark-mode {
+    background-color: black;
+    color: white;
+    margin-top: 7vh;
+    overflow: scroll;
+}
+
 body.light-mode {
-    background: white;
+    background-color: white;
     color: black;
     margin-top: 7vh;
     overflow: scroll;
-} 
-
-body.jedi-mode {
-    background: #0dcaf0;
-    color: #ffc107;
-    margin-top: 7vh;
 }
 
-body.sith-mode {
-    background: #dc3545;
-    color: #212529;
-    margin-top: 7vh;
+.cve-card {
+    transition: box-shadow 0.2s ease;
+}
+
+.cve-card:hover {
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2) !important;
 }
 
 .container {
@@ -31,12 +34,5 @@ body.sith-mode {
 }
 
 .bg-image {
-    /* height: 10vh !important;
-    width: 25vw !important; */
-    /* border-radius: 20%; */
-    box-shadow: 0 .05em .25rem rgba(255, 255, 255) !important;
     background-color: black;
 }
-
-
-

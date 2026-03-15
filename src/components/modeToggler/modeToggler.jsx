@@ -27,13 +27,15 @@ const Toggler = () => {
         document.body.className = theme;
     }, [theme])
 
+    const getToggleColor = () => {
+        return theme === 'dark-mode' ? 'light' : 'dark';
+    }
 
     return(
         <div className="pt-2 mx-3">
-            {/* <MDBSwitch inline id='flexSwitchCheckDefault' label={theme === 'dark-mode' ? 'Dark' : 'Light'} className='bg-secondary' onClick={toggleTheme} /> */}
             <MDBDropdown>
-                <MDBDropdownToggle color='secondary' className="shadow" >Mode</MDBDropdownToggle>
-                <MDBDropdownMenu dark className="mt-2 ">
+                <MDBDropdownToggle color={getToggleColor()} className="shadow-5-strong border" >Mode</MDBDropdownToggle>
+                <MDBDropdownMenu dark className="mt-2 text-center shadow-5-strong">
                     <MDBDropdownItem onClick={()=> toggleTheme('light-mode')} link >Light</MDBDropdownItem>
                     <MDBDropdownItem onClick={()=> toggleTheme('dark-mode')} link >Dark</MDBDropdownItem>
                 </MDBDropdownMenu>
