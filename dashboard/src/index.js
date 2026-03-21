@@ -1,6 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { HostProvider } from "./context/HostContext";
 
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -11,6 +12,8 @@ createRoot(
     .render(
         <React.StrictMode>
             <BrowserRouter>
-                <App />
+                <HostProvider>
+                    <App />
+                </HostProvider>
             </BrowserRouter>
         </React.StrictMode>);

@@ -8,7 +8,7 @@ import Toggler from "./components/modeToggler/modeToggler";
 // New SIEM Components
 import Home from "./components/home/home";
 import Computers from "./components/computers/computers";
-import Vulnerabilities from "./components/vulnerabilities/vulnerabilities";
+import Logs from "./components/logs/logs";
 import Scripts from "./components/scripts/scripts";
 import About from "./components/about/about";
 
@@ -20,7 +20,7 @@ const App = () => {
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/computers' element={<Computers />} />
-                <Route path='/vulnerabilities' element={<Vulnerabilities />} />
+                <Route path='/logs' element={<Logs />} />
                 <Route path='/CVE' element={<CVE />} />
                 <Route path='/scripts' element={<Scripts />} />
                 <Route path='/about' element={<About />} />

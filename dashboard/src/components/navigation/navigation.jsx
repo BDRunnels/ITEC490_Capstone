@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { HostContext } from '../../context/HostContext';
 import {
   MDBNavbar,
   MDBContainer,
@@ -11,11 +12,17 @@ import {
   MDBBtn,
   MDBNavbarNav,
   MDBIcon,
-  MDBInputGroup
+  MDBInputGroup,
+  MDBDropdown,
+  MDBDropdownToggle,
+  MDBDropdownMenu,
+  MDBDropdownItem
 } from 'mdb-react-ui-kit';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { currentHost } = useContext(HostContext);
+  
   const [hovered1, setHovered1] = useState(false);
   const [hovered2, setHovered2] = useState(false);
   const [hovered3, setHovered3] = useState(false);
@@ -82,13 +89,12 @@ const Navigation = () => {
 
   return (
     <>
-      <MDBNavbar scrolling expand='md' light bgColor='black' className='shadow navbar-dark navbar-nav-scroll fixed-top' 
+      <MDBNavbar scrolling expand='md' light bgColor='black' className='shadow navbar-dark fixed-top' 
       style={{
-        'borderBottom': 'white 1px solid',
-        'opacity': '.85'
+        'borderBottom': 'white 1px solid'
       }}
       onMouseLeave={() => setIsOpen(false)}>
-        <MDBContainer fluid>
+        <MDBContainer fluid style={{ overflow: 'visible' }}>
           <MDBNavbarToggler
             type='button'
             data-target='#navbarCollapse'
@@ -111,15 +117,7 @@ const Navigation = () => {
                 {/* </MDBNavbarLink> */}
                 </Link>
               </MDBNavbarItem>
-              <MDBNavbarItem>
-                {/* <MDBNavbarLink active aria-current='page' href='/people'> */}
-                <Link to='/vulnerabilities' className='nav-link' onClick={() => setIsOpen(false)} >
-                    <MDBBtn  outline color='white' onMouseEnter={handleHover2} onMouseLeave={handleHover2} style={buttonStyle2} type='button'>
-                        VULNERABILITIES
-                    </MDBBtn>
-                {/* </MDBNavbarLink> */}
-                </Link>
-              </MDBNavbarItem>
+
               <MDBNavbarItem>
                 {/* <MDBNavbarLink active aria-current='page' href='/vehicles'> */}
                 <Link to='/CVE' className='nav-link' onClick={() => setIsOpen(false)}>
@@ -148,6 +146,27 @@ const Navigation = () => {
                 {/* </MDBNavbarLink> */}
               </MDBNavbarItem>
             </MDBNavbarNav>
+            
+            {/* Display Active Selected PC/Host with Dropdown */}
+            {currentHost && (
+              <MDBDropdown className="ms-lg-4 mt-3 mt-lg-0">
+                <MDBDropdownToggle tag="div" className="d-flex align-items-center p-2 rounded w-100 h-100" style={{ backgroundColor: "#2b2b3c", border: "1px solid #4d4d5b", cursor: "pointer", boxShadow: "none" }}>
+                  <i className="fas fa-desktop text-info me-2"></i>
+                  <div className="d-flex flex-column lh-1 me-2 text-start">
+                    <span className="text-muted" style={{ fontSize: "0.7rem", fontWeight: "bold", textTransform: "uppercase" }}>Selected VM</span>
+                    <span className="text-white fw-bold" style={{ fontSize: "0.9rem" }}>{currentHost}</span>
+                  </div>
+                </MDBDropdownToggle>
+                <MDBDropdownMenu style={{ backgroundColor: "#2b2b3c", border: "1px solid #4d4d5b", position: "absolute", zIndex: 1050 }}>
+                  <MDBDropdownItem link>
+                    <Link to="/logs" className="text-white text-decoration-none d-block w-100" onClick={() => setIsOpen(false)}>
+                      <i className="fas fa-list me-2"></i> View Logs
+                    </Link>
+                  </MDBDropdownItem>
+                </MDBDropdownMenu>
+              </MDBDropdown>
+            )}
+            
           </MDBCollapse>
         </MDBContainer>
       </MDBNavbar>
