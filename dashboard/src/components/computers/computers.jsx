@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { HostContext } from '../../context/HostContext';
 
 const Computers = () => {
-  const { currentHost, setCurrentHost } = useContext(HostContext);
+  const { currentHost, setCurrentHost, theme } = useContext(HostContext);
   const navigate = useNavigate();
   const [hosts, setHosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,40 +63,41 @@ const Computers = () => {
         )}
 
         {!loading && !error && hosts.length > 0 && (
-           <div className="row">
-             {hosts.map((host) => (
-                <div className="col-md-6 col-lg-4 mb-4" key={host.hostname}>
-                   <div 
-                      className="card h-100 shadow-sm"
-                      style={{ 
-                          cursor: 'pointer',
-                          backgroundColor: currentHost === host.hostname ? '#0d6efd' : '#2b2b3c',
-                          color: 'white',
-                          border: currentHost === host.hostname ? '2px solid white' : '1px solid #4d4d5b',
-                          transition: 'all 0.2s ease-in-out'
-                      }}
-                      onClick={() => {
-                        if (currentHost === host.hostname) {
-                           setCurrentHost(null);
-                        } else {
-                           setCurrentHost(host.hostname);
-                        }
-                      }}
-                      onMouseEnter={() => setHoveredHost(host.hostname)}
-                      onMouseLeave={() => setHoveredHost(null)}
-                   >
-                     <div className="card-body text-center d-flex flex-column align-items-center justify-content-center position-relative">
-                        <i className={`fas fa-laptop fs-1 mb-3 ${currentHost === host.hostname ? 'text-white' : 'text-primary'}`}></i>
-                        <h5 className="card-title fw-bold mb-0">{host.hostname}</h5>
-                        {host.os && <small className="text-muted mt-2" style={{color: '#ccc'}}>{host.os}</small>}
-                        {host.ip && <small className="text-muted" style={{color: '#ccc'}}>IP: {host.ip}</small>}
-                        
-                        {/* Quick View Logs Button on Hover */}
+           <div className={`p-4 rounded shadow ${theme === 'light-mode' ? 'border border-dark' : ''}`}>
+             <div className="row">
+               {hosts.map((host) => (
+                  <div className="col-md-6 col-lg-4 mb-4" key={host.hostname}>
+                     <div 
+                        className="card h-100 shadow-sm"
+                        style={{ 
+                            cursor: 'pointer',
+                            backgroundColor: currentHost === host.hostname ? '#0d6efd' : '#2b2b3c',
+                            color: 'white',
+                            border: currentHost === host.hostname ? '2px solid white' : '1px solid #4d4d5b',
+                            transition: 'all 0.2s ease-in-out'
+                        }}
+                        onClick={() => {
+                          if (currentHost === host.hostname) {
+                             setCurrentHost(null);
+                          } else {
+                             setCurrentHost(host.hostname);
+                          }
+                        }}
+                        onMouseEnter={() => setHoveredHost(host.hostname)}
+                        onMouseLeave={() => setHoveredHost(null)}
+                     >
+                       <div className="card-body text-center d-flex flex-column align-items-center justify-content-center position-relative">
+                          <i className={`fas fa-laptop fs-1 mb-3 ${currentHost === host.hostname ? 'text-white' : 'text-primary'}`}></i>
+                          <h5 className="card-title fw-bold mb-0">{host.hostname}</h5>
+                          {host.os && <small className="mt-2" style={{color: '#ccc'}}>{host.os}</small>}
+                          {host.ip && <small className="" style={{color: '#ccc'}}>IP: {host.ip}</small>}
+                          
+                          {/* Quick View Logs & Kill Agent Buttons on Hover */}
                         {hoveredHost === host.hostname && (
-                          <div className="position-absolute w-100 h-100 d-flex justify-content-center align-items-center" 
-                               style={{ top: 0, left: 0, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 'inherit' }}>
+                          <div className="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center" 
+                               style={{ top: 0, left: 0, backgroundColor: 'rgba(0,0,0,0.85)', borderRadius: 'inherit' }}>
                              <button 
-                                className="btn btn-primary shadow-sm"
+                                className="btn btn-primary shadow-sm mb-2"
                                 onClick={(e) => {
                                   e.stopPropagation(); // Prevent card selection toggle
                                   setCurrentHost(host.hostname);
@@ -105,12 +106,38 @@ const Computers = () => {
                              >
                                 <i className="fas fa-list me-2"></i>View Logs
                              </button>
+                             <button 
+                                className="btn btn-danger shadow-sm btn-sm"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  const pwd = window.prompt(`WARNING: Are you sure you want to terminate the SIEM Agent permanently on "${host.hostname}"?\n\nEnter administrator password to confirm:`);
+                                  if (pwd !== "admin") {
+                                      if (pwd !== null) alert("Incorrect administrator password. Termination aborted.");
+                                      return;
+                                  }
+                                  
+                                  const killCmd = "Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name 'SIEMAgent' -ErrorAction SilentlyContinue; Get-Process powershell -ErrorAction SilentlyContinue | Where-Object { (Get-CimInstance Win32_Process -Filter \\\"ProcessId=$($_.Id)\\\").CommandLine -match \\\"siem-agent.ps1\\\" } | Stop-Process -Force";
+                                  try {
+                                      await fetch("/api/commands", {
+                                          method: "POST",
+                                          headers: {"Content-Type": "application/json"},
+                                          body: JSON.stringify({ hostname: host.hostname, command: killCmd })
+                                      });
+                                      alert(`Termination signal queued for ${host.hostname}.`);
+                                  } catch (err) {
+                                      alert(`Error queuing termination: ${err}`);
+                                  }
+                                }}
+                             >
+                                <i className="fas fa-skull-crossbones me-2"></i>Kill Agent
+                             </button>
                           </div>
                         )}
+                       </div>
                      </div>
-                   </div>
-                </div>
-             ))}
+                  </div>
+               ))}
+             </div>
            </div>
         )}
 

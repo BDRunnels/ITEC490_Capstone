@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HostContext } from '../../context/HostContext';
 import {
@@ -28,6 +28,8 @@ const Navigation = () => {
   const [hovered3, setHovered3] = useState(false);
   const [hovered4, setHovered4] = useState(false);
   const [hovered5, setHovered5] = useState(false);
+  const [hoveredAdmin, setHoveredAdmin] = useState(false);
+  const [hoveredLogs, setHoveredLogs] = useState(false);
 
   // Button 1
   const handleHover1 = () => {
@@ -52,6 +54,10 @@ const Navigation = () => {
   // Button 5
   const handleHover5 = () => {
     setHovered5(!hovered5);
+  };
+
+  const handleHoverAdmin = () => {
+    setHoveredAdmin(!hoveredAdmin);
   };
 
  
@@ -86,6 +92,12 @@ const Navigation = () => {
     borderColor: hovered5 ? 'black' : 'white'
   };
 
+  const buttonStyleAdmin = {
+    backgroundColor: hoveredAdmin ? 'white' : '',
+    color: hoveredAdmin ? 'black' : 'white',
+    borderColor: hoveredAdmin ? 'black' : 'white'
+  };
+
 
   return (
     <>
@@ -108,6 +120,32 @@ const Navigation = () => {
           <Link to='/' className='nav-link' onClick={() => setIsOpen(false)} > <img style={{ borderRadius: '5px', border: '3px solid white', height: '50px', width: '125px' }} src='https://www.comodo.com/images/what-are-the-three-characteristics-of-siem.png' alt='Banner' /> </Link>
           <MDBCollapse navbar id='navbarCollapse' show={isOpen} >
             <MDBNavbarNav className='mr-auto mb-2 mb-lg-0 justify-content-end '>
+              {/* Display Active Selected PC/Host with Dropdown */}
+            {currentHost && (
+              <MDBDropdown className="ms-lg-4 mt-3 mt-lg-0">
+                <MDBDropdownToggle tag="div" className="d-flex align-items-center justify-content-center p-2 rounded w-100 h-100 border border-white" style={{ backgroundColor: "#2b2b3c", cursor: "pointer", boxShadow: "none" }}>
+                  <i className="fas fa-desktop text-info me-2"></i>
+                  <div className="d-flex flex-column lh-1 me-2 text-center">
+                    <span className="text-white border-white" style={{ fontSize: "0.7rem", fontWeight: "bold", textTransform: "uppercase" }}>Selected VM</span>
+                    <span className="text-white fw-bold" style={{ fontSize: "0.9rem" }}>{currentHost}</span>
+                  </div>
+                </MDBDropdownToggle>
+                <MDBDropdownMenu style={{ backgroundColor: "#2b2b3c", border: "1px solid #4d4d5b", position: "absolute", zIndex: 1050, minWidth: "100%", padding: 0 }}>
+                  <MDBDropdownItem link style={{ backgroundColor: hoveredLogs ? "white" : "transparent", padding: 0 }}>
+                    <Link 
+                      to="/logs" 
+                      className={`text-decoration-none d-block w-100 text-center py-2 ${hoveredLogs ? 'text-black' : 'text-white'}`} 
+                      onClick={() => setIsOpen(false)}
+                      onMouseEnter={() => setHoveredLogs(true)}
+                      onMouseLeave={() => setHoveredLogs(false)}
+                      style={{ transition: "color 0.2s ease-in-out" }}
+                    >
+                      <i className="fas fa-list me-2"></i> View Logs
+                    </Link>
+                  </MDBDropdownItem>
+                </MDBDropdownMenu>
+              </MDBDropdown>
+            )}
               <MDBNavbarItem>
                 {/* <MDBNavbarLink active aria-current='page' href='/species'> */}
                 <Link to='/computers' className='nav-link' onClick={() => setIsOpen(false)} >
@@ -145,28 +183,14 @@ const Navigation = () => {
                 </Link>
                 {/* </MDBNavbarLink> */}
               </MDBNavbarItem>
+              <MDBNavbarItem>
+                <Link to='/admin' className='nav-link' onClick={() => setIsOpen(false)}>
+                    <MDBBtn outline color='white' onMouseEnter={handleHoverAdmin} onMouseLeave={handleHoverAdmin} style={buttonStyleAdmin} type='button'>
+                        <i className="fas fa-lock me-2"></i>ADMIN
+                    </MDBBtn>
+                </Link>
+              </MDBNavbarItem>
             </MDBNavbarNav>
-            
-            {/* Display Active Selected PC/Host with Dropdown */}
-            {currentHost && (
-              <MDBDropdown className="ms-lg-4 mt-3 mt-lg-0">
-                <MDBDropdownToggle tag="div" className="d-flex align-items-center p-2 rounded w-100 h-100" style={{ backgroundColor: "#2b2b3c", border: "1px solid #4d4d5b", cursor: "pointer", boxShadow: "none" }}>
-                  <i className="fas fa-desktop text-info me-2"></i>
-                  <div className="d-flex flex-column lh-1 me-2 text-start">
-                    <span className="text-muted" style={{ fontSize: "0.7rem", fontWeight: "bold", textTransform: "uppercase" }}>Selected VM</span>
-                    <span className="text-white fw-bold" style={{ fontSize: "0.9rem" }}>{currentHost}</span>
-                  </div>
-                </MDBDropdownToggle>
-                <MDBDropdownMenu style={{ backgroundColor: "#2b2b3c", border: "1px solid #4d4d5b", position: "absolute", zIndex: 1050 }}>
-                  <MDBDropdownItem link>
-                    <Link to="/logs" className="text-white text-decoration-none d-block w-100" onClick={() => setIsOpen(false)}>
-                      <i className="fas fa-list me-2"></i> View Logs
-                    </Link>
-                  </MDBDropdownItem>
-                </MDBDropdownMenu>
-              </MDBDropdown>
-            )}
-            
           </MDBCollapse>
         </MDBContainer>
       </MDBNavbar>

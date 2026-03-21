@@ -12,6 +12,8 @@ import Logs from "./components/logs/logs";
 import Scripts from "./components/scripts/scripts";
 import About from "./components/about/about";
 
+import Admin from "./components/admin/admin";
+
 const App = () => {
     return (
         <Fragment>
@@ -24,6 +26,7 @@ const App = () => {
                 <Route path='/CVE' element={<CVE />} />
                 <Route path='/scripts' element={<Scripts />} />
                 <Route path='/about' element={<About />} />
+                <Route path='/admin' element={<Admin />} />
             </Routes>
         </Fragment>
     );

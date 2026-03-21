@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { HostContext } from "../../context/HostContext";
 import { 
     MDBDropdownItem, 
     MDBSwitch ,
@@ -8,7 +9,7 @@ import {
 } from 'mdb-react-ui-kit';
 
 const Toggler = () => {
-    const [theme, setTheme] = useState('dark-mode');
+    const { theme, setTheme } = useContext(HostContext);
 
     const toggleTheme = (theme) => {
         switch(theme) {
@@ -32,7 +33,7 @@ const Toggler = () => {
     }
 
     return(
-        <div className="pt-2 mx-3">
+        <div className="mx-3" style={{ paddingTop: '50px' }}>
             <MDBDropdown>
                 <MDBDropdownToggle color={getToggleColor()} className="shadow-5-strong border" >Mode</MDBDropdownToggle>
                 <MDBDropdownMenu dark className="mt-2 text-center shadow-5-strong">
