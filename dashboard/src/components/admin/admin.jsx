@@ -8,6 +8,8 @@ const Admin = () => {
   const [error, setError] = useState(null);
   const [statusMsg, setStatusMsg] = useState(null);
   const [isWiping, setIsWiping] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [isUnseeding, setIsUnseeding] = useState(false);
 
   const handleUnlock = (e) => {
     e.preventDefault();
@@ -49,6 +51,26 @@ const Admin = () => {
     }
   };
 
+  const handleSeedAction = async (endpoint, actionName, setter) => {
+    setter(true);
+    setStatusMsg(null);
+    setError(null);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: password })
+      });
+      const data = await response.json();
+      if (!response.ok || data.status === "error") throw new Error(data.message || `Failed to ${actionName}`);
+      setStatusMsg(data.message);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setter(false);
+    }
+  };
+
   return (
     <div style={{ marginTop: '20px' }}>
       <h1 className="text-center mb-4">Administrator Access</h1>
@@ -87,7 +109,7 @@ const Admin = () => {
                
                <div className="row mt-5 text-start">
                  {/* Agent Scripts Generation Column */}
-                 <div className="col-md-6 mb-4">
+                 <div className="col-md-4 mb-4">
                     <div className="p-4 h-100 rounded border border-warning" style={{ backgroundColor: theme === 'dark-mode' ? "#2b2b3c" : "#fff" }}>
                       <h5><i className="fas fa-download text-warning me-2"></i> Agent Distributions</h5>
                       <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Download pre-packaged SIEM script installers or terminal disruption payloads to physically run on target systems.</p>
@@ -103,11 +125,28 @@ const Admin = () => {
                     </div>
                  </div>
 
+                 {/* Dummy Data Engineering Column */}
+                 <div className="col-md-4 mb-4">
+                    <div className="p-4 h-100 rounded border border-info" style={{ backgroundColor: theme === 'dark-mode' ? "#2b2b3c" : "#fff" }}>
+                      <h5><i className="fas fa-flask text-info me-2"></i> Testing Utilities</h5>
+                      <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Instantly populate the active master database with artificial Virtual Machine network topology models and threat events.</p>
+                      
+                      <div className="d-grid gap-3 mt-auto">
+                         <button onClick={() => handleSeedAction("/api/seed", "seed data", setIsSeeding)} className="btn btn-outline-info" disabled={isSeeding}>
+                           {isSeeding ? 'Injecting...' : <><i className="fas fa-syringe me-2"></i> Inject Dummy Data</>}
+                         </button>
+                         <button onClick={() => handleSeedAction("/api/unseed", "unseed data", setIsUnseeding)} className="btn btn-outline-secondary" disabled={isUnseeding}>
+                           {isUnseeding ? 'Removing...' : <><i className="fas fa-eraser me-2"></i> Remove Dummy Data</>}
+                         </button>
+                      </div>
+                    </div>
+                 </div>
+
                  {/* Database Management Column */}
-                 <div className="col-md-6 mb-4">
+                 <div className="col-md-4 mb-4">
                     <div className="p-4 h-100 rounded border border-danger" style={{ backgroundColor: theme === 'dark-mode' ? "#2b2b3c" : "#fff" }}>
                       <h5><i className="fas fa-database text-danger me-2"></i> Vault Management</h5>
-                      <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Trigger an immediate, irreversible wipe of all aggregated telemetry hardware, security, and defender logs. Command action log history is preserved.</p>
+                      <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Trigger an immediate, irreversible wipe of all aggregated telemetry logs. Command history is uniquely preserved.</p>
                       
                       <div className="d-grid mt-auto">
                          <button onClick={handleWipeDatabase} className="btn btn-danger" disabled={isWiping}>

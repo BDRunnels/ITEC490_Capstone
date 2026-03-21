@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { HostContext } from '../../context/HostContext';
 import { MDBAccordion, MDBAccordionItem } from 'mdb-react-ui-kit';
 
@@ -12,6 +12,34 @@ const logTypes = [
 
 const Logs = () => {
   const { currentHost, theme } = useContext(HostContext);
+  const [logsData, setLogsData] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!currentHost) return;
+    
+    const fetchAllLogs = async () => {
+      setLoading(true);
+      const newData = {};
+      
+      for (const type of logTypes) {
+        try {
+          const res = await fetch(`/api/reports?type=${type.id}&host=${currentHost}`);
+          if (res.ok) {
+            newData[type.id] = await res.json();
+          } else {
+            newData[type.id] = [];
+          }
+        } catch (e) {
+          newData[type.id] = [];
+        }
+      }
+      setLogsData(newData);
+      setLoading(false);
+    };
+
+    fetchAllLogs();
+  }, [currentHost]);
 
   if (!currentHost) {
     return (
@@ -26,6 +54,43 @@ const Logs = () => {
       </div>
     );
   }
+
+  const renderLogTable = (typeId) => {
+    const data = logsData[typeId];
+    
+    if (loading) {
+      return <div className="text-center p-3"><span className="spinner-border spinner-border-sm text-primary"></span> Loading...</div>;
+    }
+    
+    if (!data || data.length === 0) {
+      return (
+        <p className={theme === 'light-mode' ? 'text-secondary m-0 text-center' : 'text-muted m-0 text-center'}>
+          No active log records found in this category.
+        </p>
+      );
+    }
+    
+    const headers = Object.keys(data[0]).filter(k => k !== "id" && k !== "hostname");
+    
+    return (
+      <div className="table-responsive">
+        <table className={`table table-sm table-hover ${theme === 'dark-mode' ? 'table-dark table-striped' : 'table-striped'}`}>
+          <thead style={{ position: "sticky", top: 0, zIndex: 1 }}>
+            <tr>
+              {headers.map(h => <th key={h} className="text-uppercase text-nowrap">{h.replace(/_/g, " ")}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, i) => (
+              <tr key={i}>
+                {headers.map(h => <td key={h}>{row[h] !== null ? String(row[h]) : ""}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
     <div style={{ marginTop: '20px' }}>
@@ -44,10 +109,8 @@ const Logs = () => {
                 key={type.id}
                 className="mb-3 border border-dark rounded shadow-5-strong"
               >
-                <div className={`p-3 text-center ${theme === 'light-mode' ? 'bg-light text-dark' : ''}`} style={theme === 'dark-mode' ? { backgroundColor: "#2b2b3c", color: "white", borderRadius: "5px" } : { borderRadius: "5px" }}>
-                  <p className={theme === 'light-mode' ? 'text-secondary m-0' : 'text-muted m-0'}>
-                    Viewing {type.label} data. API log results for {type.id} will be populated here.
-                  </p>
+                <div className={`p-3 ${theme === 'light-mode' ? 'bg-light text-dark' : ''}`} style={theme === 'dark-mode' ? { backgroundColor: "#2b2b3c", color: "white", borderRadius: "5px" } : { borderRadius: "5px" }}>
+                  {renderLogTable(type.id)}
                 </div>
               </MDBAccordionItem>
             ))}
