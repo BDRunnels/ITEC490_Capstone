@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { HostContext } from '../../context/HostContext';
+import { MDBBtn } from 'mdb-react-ui-kit';
 
 const Admin = () => {
   const { theme } = useContext(HostContext);
@@ -10,7 +11,7 @@ const Admin = () => {
   const [isWiping, setIsWiping] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [isUnseeding, setIsUnseeding] = useState(false);
-
+  
   const handleUnlock = (e) => {
     e.preventDefault();
     if (password === "admin") {
@@ -100,10 +101,7 @@ const Admin = () => {
                {error && <div className="alert alert-danger mt-3">{error}</div>}
              </form>
           ) : (
-             <div>
-               <i className="fas fa-unlock fa-3x mb-4 text-success"></i>
-               <h4 className="mb-4">Admin Dashboard</h4>
-               
+             <div>             
                {statusMsg && <div className="alert alert-success">{statusMsg}</div>}
                {error && <div className="alert alert-danger">{error}</div>}
                
@@ -115,12 +113,12 @@ const Admin = () => {
                       <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Download pre-packaged SIEM script installers or terminal disruption payloads to physically run on target systems.</p>
                       
                       <div className="d-grid gap-3">
-                         <a href="/api/generate-agent.ps1" className="btn btn-outline-warning" download>
+                         <MDBBtn tag="a" href="/api/generate-agent.ps1" outline color="warning" className="hover-shadow" download>
                            <i className="fas fa-file-archive me-2"></i> Download Agent Bundle
-                         </a>
-                         <a href="/api/generate-kill-script" className="btn btn-outline-danger" download>
+                         </MDBBtn>
+                         <MDBBtn tag="a" href="/api/generate-kill-script" outline color="danger" className="hover-shadow" download>
                            <i className="fas fa-skull-crossbones me-2"></i> Download Kill Script
-                         </a>
+                         </MDBBtn>
                       </div>
                     </div>
                  </div>
@@ -132,12 +130,12 @@ const Admin = () => {
                       <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Instantly populate the active master database with artificial Virtual Machine network topology models and threat events.</p>
                       
                       <div className="d-grid gap-3 mt-auto">
-                         <button onClick={() => handleSeedAction("/api/seed", "seed data", setIsSeeding)} className="btn btn-outline-info" disabled={isSeeding}>
+                         <MDBBtn onClick={() => handleSeedAction("/api/seed", "seed data", setIsSeeding)} outline color="info" className="hover-shadow" disabled={isSeeding}>
                            {isSeeding ? 'Injecting...' : <><i className="fas fa-syringe me-2"></i> Inject Dummy Data</>}
-                         </button>
-                         <button onClick={() => handleSeedAction("/api/unseed", "unseed data", setIsUnseeding)} className="btn btn-outline-secondary" disabled={isUnseeding}>
+                         </MDBBtn>
+                         <MDBBtn onClick={() => handleSeedAction("/api/unseed", "unseed data", setIsUnseeding)} outline color="secondary" className="hover-shadow" disabled={isUnseeding}>
                            {isUnseeding ? 'Removing...' : <><i className="fas fa-eraser me-2"></i> Remove Dummy Data</>}
-                         </button>
+                         </MDBBtn>
                       </div>
                     </div>
                  </div>
@@ -149,9 +147,9 @@ const Admin = () => {
                       <p className={`small mb-4 ${theme === 'light-mode' ? 'text-muted' : 'text-secondary'}`}>Trigger an immediate, irreversible wipe of all aggregated telemetry logs. Command history is uniquely preserved.</p>
                       
                       <div className="d-grid mt-auto">
-                         <button onClick={handleWipeDatabase} className="btn btn-danger" disabled={isWiping}>
+                         <MDBBtn onClick={handleWipeDatabase} color="danger" className="hover-shadow" disabled={isWiping}>
                            {isWiping ? 'Wiping...' : <><i className="fas fa-fire me-2"></i> Purge Database</>}
-                         </button>
+                         </MDBBtn>
                       </div>
                     </div>
                  </div>
