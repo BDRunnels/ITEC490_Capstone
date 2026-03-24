@@ -34,6 +34,8 @@ const Computers = () => {
     };
 
     fetchHosts();
+    const intervalId = setInterval(fetchHosts, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
