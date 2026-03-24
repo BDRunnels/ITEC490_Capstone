@@ -28,7 +28,6 @@ const Navigation = () => {
   const [hovered3, setHovered3] = useState(false);
   const [hovered4, setHovered4] = useState(false);
   const [hovered5, setHovered5] = useState(false);
-  const [hoveredAdmin, setHoveredAdmin] = useState(false);
   const [hoveredLogs, setHoveredLogs] = useState(false);
 
   // Button 1
@@ -55,12 +54,6 @@ const Navigation = () => {
   const handleHover5 = () => {
     setHovered5(!hovered5);
   };
-
-  const handleHoverAdmin = () => {
-    setHoveredAdmin(!hoveredAdmin);
-  };
-
- 
 
   const buttonStyle1 = {
     backgroundColor: hovered1 ? 'white' : '',
@@ -91,13 +84,6 @@ const Navigation = () => {
     color: hovered5 ? 'black' : 'white',
     borderColor: hovered5 ? 'black' : 'white'
   };
-
-  const buttonStyleAdmin = {
-    backgroundColor: hoveredAdmin ? 'white' : '',
-    color: hoveredAdmin ? 'black' : 'white',
-    borderColor: hoveredAdmin ? 'black' : 'white'
-  };
-
 
   return (
     <>
@@ -175,7 +161,7 @@ const Navigation = () => {
               </MDBNavbarItem>
               <MDBNavbarItem>
                 <Link to='/admin' className='nav-link' onClick={() => setIsOpen(false)}>
-                    <MDBBtn outline color='white' onMouseEnter={handleHoverAdmin} onMouseLeave={handleHoverAdmin} style={buttonStyleAdmin} type='button'>
+                    <MDBBtn outline color='white' onMouseEnter={handleHover2} onMouseLeave={handleHover2} style={buttonStyle2} type='button'>
                         <i className="fas fa-lock me-2"></i>ADMIN
                     </MDBBtn>
                 </Link>
