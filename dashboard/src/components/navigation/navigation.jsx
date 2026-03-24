@@ -155,16 +155,6 @@ const Navigation = () => {
                 {/* </MDBNavbarLink> */}
                 </Link>
               </MDBNavbarItem>
-
-              <MDBNavbarItem>
-                {/* <MDBNavbarLink active aria-current='page' href='/vehicles'> */}
-                <Link to='/CVE' className='nav-link' onClick={() => setIsOpen(false)}>
-                    <MDBBtn  outline color='white' onMouseEnter={handleHover3} onMouseLeave={handleHover3} style={buttonStyle3} type='button'>
-                        CVE
-                    </MDBBtn>
-                {/* </MDBNavbarLink> */}
-                </Link>
-              </MDBNavbarItem>
               <MDBNavbarItem>
                 {/* <MDBNavbarLink active aria-current='page' href='/starships'> */}
                 <Link to='/scripts' className='nav-link' onClick={() => setIsOpen(false)}>
@@ -175,13 +165,13 @@ const Navigation = () => {
                 {/* </MDBNavbarLink> */}
               </MDBNavbarItem>
               <MDBNavbarItem>
-                {/* <MDBNavbarLink active aria-current='page' href='/starships'> */}
-                <Link to='/about' className='nav-link' onClick={() => setIsOpen(false)}>
-                    <MDBBtn  outline color='white' onMouseEnter={handleHover5} onMouseLeave={handleHover5} style={buttonStyle5} type='button'>
-                        ABOUT
+                {/* <MDBNavbarLink active aria-current='page' href='/vehicles'> */}
+                <Link to='/CVE' className='nav-link' onClick={() => setIsOpen(false)}>
+                    <MDBBtn  outline color='white' onMouseEnter={handleHover3} onMouseLeave={handleHover3} style={buttonStyle3} type='button'>
+                        CVE
                     </MDBBtn>
-                </Link>
                 {/* </MDBNavbarLink> */}
+                </Link>
               </MDBNavbarItem>
               <MDBNavbarItem>
                 <Link to='/admin' className='nav-link' onClick={() => setIsOpen(false)}>
@@ -189,6 +179,15 @@ const Navigation = () => {
                         <i className="fas fa-lock me-2"></i>ADMIN
                     </MDBBtn>
                 </Link>
+              </MDBNavbarItem>
+              <MDBNavbarItem>
+                {/* <MDBNavbarLink active aria-current='page' href='/starships'> */}
+                <Link to='/about' className='nav-link' onClick={() => setIsOpen(false)}>
+                    <MDBBtn  outline color='white' onMouseEnter={handleHover5} onMouseLeave={handleHover5} style={buttonStyle5} type='button'>
+                        ABOUT
+                    </MDBBtn>
+                </Link>
+                {/* </MDBNavbarLink> */}
               </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>
