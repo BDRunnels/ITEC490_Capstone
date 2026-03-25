@@ -14,7 +14,6 @@ if %errorlevel% neq 0 (
 :: ============================================================
 ::  SIEM Agent SYSTEM Installer
 :: ============================================================
-
 set SCRIPT_DIR=%~dp0
 set AGENT_PS=%SCRIPT_DIR%siem-agent.ps1
 

@@ -205,7 +205,7 @@ New-NetFirewallRule -DisplayName "SIEM Block Ports ${portList} UDP" -Direction O
                 <MDBCardTitle className="d-flex align-items-center mb-3 text-info fw-bold">
                   <i className="fas fa-terminal me-2 fs-4"></i> Run Custom PowerShell
                 </MDBCardTitle>
-                <p className="small mb-4 text-muted">Execute a direct, raw PowerShell command against the target VM agent.</p>
+                <p className="small mb-4 text-muted">Execute a PowerShell script directly on {currentHost}.</p>
                 <MDBTextArea 
                   label="Raw PowerShell Script Code" 
                   rows={4} 

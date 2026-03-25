@@ -1,5 +1,5 @@
 # ============================================
-# SIEM Agent Kill Script (for HKCU Run version)
+# SIEM Agent Kill Script (SYSTEM Task Version)
 # ============================================
 
 param(
@@ -7,36 +7,35 @@ param(
 )
 
 $hostname = $env:COMPUTERNAME
+$taskName = "SIEMAgent"
+$scriptName = "siem-agent.ps1"
 
 # ---------------------------------------------------------
-# Remove HKCU Run persistence
+# Remove SYSTEM Scheduled Task
 # ---------------------------------------------------------
-$runKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-
-if (Get-ItemProperty -Path $runKey -Name "SIEMAgent" -ErrorAction SilentlyContinue) {
-    Remove-ItemProperty -Path $runKey -Name "SIEMAgent" -ErrorAction SilentlyContinue
+try {
+    schtasks.exe /Delete /TN $taskName /F | Out-Null
 }
+catch {}
 
 # ---------------------------------------------------------
 # Kill running agent processes
 # ---------------------------------------------------------
-# The agent runs as: powershell.exe -WindowStyle Hidden -File "siem-agent.ps1"
-# We kill any PowerShell instance running this script.
-
-$scriptName = "siem-agent.ps1"
-
-Get-Process powershell -ErrorAction SilentlyContinue | ForEach-Object {
-    try {
-        $cmdLine = (Get-CimInstance Win32_Process -Filter "ProcessId=$($_.Id)").CommandLine
-        if ($cmdLine -match $scriptName) {
-            Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
+try {
+    Get-Process powershell -ErrorAction SilentlyContinue | ForEach-Object {
+        try {
+            $cmdLine = (Get-CimInstance Win32_Process -Filter "ProcessId=$($_.Id)").CommandLine
+            if ($cmdLine -match $scriptName) {
+                Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
+            }
         }
+        catch {}
     }
-    catch {}
 }
+catch {}
 
 # ---------------------------------------------------------
-# Report kill event to backend (optional)
+# Report kill event to backend
 # ---------------------------------------------------------
 try {
     $payload = @{

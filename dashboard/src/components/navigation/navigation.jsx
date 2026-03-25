@@ -168,7 +168,7 @@ const Navigation = () => {
               </MDBNavbarItem>
               <MDBNavbarItem>
                 {/* <MDBNavbarLink active aria-current='page' href='/starships'> */}
-                <Link to='/about' className='nav-link' onClick={() => setIsOpen(false)}>
+                <Link to='/about' className='nav-link visually-hidden' onClick={() => setIsOpen(false)}>
                     <MDBBtn  outline color='white' onMouseEnter={handleHover5} onMouseLeave={handleHover5} style={buttonStyle5} type='button'>
                         ABOUT
                     </MDBBtn>
