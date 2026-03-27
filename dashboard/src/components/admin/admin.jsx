@@ -174,31 +174,19 @@ import React, { useState, useContext } from 'react';
 import { HostContext } from '../../context/HostContext';
 import { MDBBtn } from 'mdb-react-ui-kit';
 
-const host = window.location.hostname;
-
-// Unused variable
-// const API_BASE = `http://${host}:5000`;
-
-// Necessary functions for Agent/Kill buttons
-const downloadAgent = () => {
-  const host = window.location.hostname;
-  const API_BASE = `http://${host}:5000`;
-
-  window.location.href = `${API_BASE}/api/generate-agent.ps1?host=${host}`;
-};
-
-const downloadKillScript = () => {
-  const host = window.location.hostname;
-  const API_BASE = `http://${host}:5000`;
-
-  window.location.href = `${API_BASE}/api/generate-kill-script?host=${host}`;
-};
-
-
-// 
-
 const Admin = () => {
-  const { theme } = useContext(HostContext);
+  const { theme, apiBase } = useContext(HostContext);
+
+  // For file downloads we always need an absolute URL
+  const downloadBase = apiBase || `http://${window.location.hostname}:5000`;
+
+  const downloadAgent = () => {
+    window.location.href = `${downloadBase}/api/generate-agent.ps1?host=${window.location.hostname}`;
+  };
+
+  const downloadKillScript = () => {
+    window.location.href = `${downloadBase}/api/generate-kill-script?host=${window.location.hostname}`;
+  };
   const [password, setPassword] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [error, setError] = useState(null);
@@ -228,7 +216,7 @@ const Admin = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/wipe", {
+      const response = await fetch(`${apiBase}/api/wipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: password })
@@ -253,7 +241,7 @@ const Admin = () => {
     setStatusMsg(null);
     setError(null);
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${apiBase}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: password })
@@ -270,33 +258,10 @@ const Admin = () => {
 
   return (
     <div style={{ marginTop: '20px' }}>
-      <h1 className="text-center mb-4">Administrator Access</h1>
+      <h1 className="text-center mb-4">Admin</h1>
       
       <div className="container" style={{ maxWidth: '800px' }}>
         <div className={`p-5 rounded shadow text-center ${theme === 'light-mode' ? 'bg-light border border-dark' : 'text-white'}`} style={theme === 'dark-mode' ? { backgroundColor: "#1e1e2f" } : {}}>
-          
-          {!isUnlocked ? (
-             <form onSubmit={handleUnlock} className="mx-auto" style={{ maxWidth: "400px" }}>
-               <i className="fas fa-lock fa-3x mb-4 text-warning"></i>
-               <h4 className="mb-4">Protected Area</h4>
-               <p className={theme === 'light-mode' ? 'text-muted' : 'text-secondary'}>Enter the terminal administrator password to manage active agents and securely wipe the SIEM database history.</p>
-               
-               <div className="input-group mb-3 mt-4">
-                 <span className="input-group-text bg-dark border-dark text-white"><i className="fas fa-key"></i></span>
-                 <input 
-                    type="password" 
-                    className="form-control bg-dark border-dark text-white" 
-                    placeholder="Enter password..." 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                 />
-                 <button className="btn btn-warning" type="submit">Unlock</button>
-               </div>
-               
-               {error && <div className="alert alert-danger mt-3">{error}</div>}
-             </form>
-          ) : (
              <div>             
                {statusMsg && <div className="alert alert-success">{statusMsg}</div>}
                {error && <div className="alert alert-danger">{error}</div>}
@@ -357,7 +322,6 @@ const Admin = () => {
                </button>
 
              </div>
-          )}
           
         </div>
       </div>

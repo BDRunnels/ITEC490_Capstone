@@ -12,7 +12,7 @@ const logTypes = [
 ];
 
 const Logs = () => {
-  const { currentHost, theme } = useContext(HostContext);
+  const { currentHost, theme, apiBase } = useContext(HostContext);
   const [logsData, setLogsData] = useState({});
   const [loading, setLoading] = useState(false);
   const [requestingLogType, setRequestingLogType] = useState(null);
@@ -23,7 +23,7 @@ const Logs = () => {
     
     for (const type of logTypes) {
       try {
-        const res = await fetch(`/api/reports?type=${type.id}&host=${currentHost}`);
+        const res = await fetch(`${apiBase}/api/reports?type=${type.id}&host=${currentHost}`);
         if (res.ok) {
           newData[type.id] = await res.json();
         } else {
@@ -54,12 +54,12 @@ const Logs = () => {
       return;
     }
 
-    const API_BASE = `http://${window.location.hostname}:5000`;
-    script = script.replace(/__API_URL__/g, API_BASE);
+    const resolvedBase = apiBase || `http://${window.location.hostname}:5000`;
+    script = script.replace(/__API_URL__/g, resolvedBase);
 
     setRequestingLogType(typeId);
     try {
-      const res = await fetch(`/api/commands`, {
+      const res = await fetch(`${apiBase}/api/commands`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

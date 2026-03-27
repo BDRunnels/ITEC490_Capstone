@@ -155,16 +155,12 @@ import { useNavigate } from 'react-router-dom';
 import { HostContext } from '../../context/HostContext';
 
 const Computers = () => {
-  const { currentHost, setCurrentHost, theme } = useContext(HostContext);
+  const { currentHost, setCurrentHost, theme, apiBase } = useContext(HostContext);
   const navigate = useNavigate();
   const [hosts, setHosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredHost, setHoveredHost] = useState(null);
-
-  // Backend auto-detection
-  const host = window.location.hostname;
-  const API_BASE = `http://${host}:5000`;
 
   /* ----------------------------------------------------
      HEARTBEAT COLOR LOGIC (from old dashboard)
@@ -188,7 +184,7 @@ const Computers = () => {
   useEffect(() => {
     const fetchHosts = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/reports?type=agent`);
+        const response = await fetch(`${apiBase}/api/reports?type=agent`);
         if (!response.ok) throw new Error('Failed to fetch hosts data');
         const data = await response.json();
 
@@ -344,7 +340,7 @@ const Computers = () => {
                                     
                                     const killCmd = "Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name 'SIEMAgent' -ErrorAction SilentlyContinue; Get-Process powershell -ErrorAction SilentlyContinue | Where-Object { (Get-CimInstance Win32_Process -Filter \\\"ProcessId=$($_.Id)\\\").CommandLine -match \\\"siem-agent.ps1\\\" } | Stop-Process -Force";
                                     try {
-                                        await fetch(`${API_BASE}/api/commands`, {
+                                        await fetch(`${apiBase}/api/commands`, {
                                             method: "POST",
                                             headers: {"Content-Type": "application/json"},
                                             body: JSON.stringify({ hostname: host.hostname, command: killCmd })

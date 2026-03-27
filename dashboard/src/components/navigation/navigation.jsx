@@ -21,13 +21,14 @@ import {
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { currentHost } = useContext(HostContext);
+  const { currentHost, username, logout } = useContext(HostContext);
   
   const [hovered1, setHovered1] = useState(false);
   const [hovered2, setHovered2] = useState(false);
   const [hovered3, setHovered3] = useState(false);
   const [hovered4, setHovered4] = useState(false);
   const [hovered5, setHovered5] = useState(false);
+  const [hovered6, setHovered6] = useState(false);
   const [hoveredLogs, setHoveredLogs] = useState(false);
 
   // Button 1
@@ -54,6 +55,11 @@ const Navigation = () => {
   const handleHover5 = () => {
     setHovered5(!hovered5);
   };
+
+  const handleHover6 = () => {
+    setHovered6(!hovered6);
+  };
+
 
   const buttonStyle1 = {
     backgroundColor: hovered1 ? 'white' : '',
@@ -83,6 +89,12 @@ const Navigation = () => {
     backgroundColor: hovered5 ? 'white' : '',
     color: hovered5 ? 'black' : 'white',
     borderColor: hovered5 ? 'black' : 'white'
+  };
+
+  const buttonStyle6 = {
+    backgroundColor: hovered6 ? 'white' : '',
+    color: hovered6 ? 'black' : 'white',
+    borderColor: hovered6 ? 'black' : 'white'
   };
 
   return (
@@ -174,6 +186,13 @@ const Navigation = () => {
                     </MDBBtn>
                 </Link>
                 {/* </MDBNavbarLink> */}
+              </MDBNavbarItem>
+              <MDBNavbarItem>
+                <span className='nav-link'>
+                    <MDBBtn outline color='white' onMouseEnter={handleHover6} onMouseLeave={handleHover6} style={buttonStyle6} onClick={logout} type='button'>
+                        <i className="fas fa-sign-out-alt me-2"></i>Sign Out
+                    </MDBBtn>
+                </span>
               </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>

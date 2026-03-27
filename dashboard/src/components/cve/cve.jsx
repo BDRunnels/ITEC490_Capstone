@@ -95,168 +95,171 @@ const CVE = () => {
   };
 
   return (
-    <div className="container" style={{ marginTop: '20px' }}>
+    <div style={{ marginTop: '20px' }}>
       <h1 className="text-center mb-4">
-        Latest CVEs from NVD (National Vulnerability Database)
-      </h1>
-      <div
-        className="mt-4 mb-5 mx-auto p-4 rounded shadow"
-        style={{ width: "100%", maxWidth: "1400px", backgroundColor: "#1e1e2f" }}
-      >
+          Latest CVEs from NVD (National Vulnerability Database)
+        </h1>
+      <div className="container">
+        <div
+          className="mt-4 mb-5 mx-auto p-4 rounded shadow"
+          style={{ width: "100%", maxWidth: "1400px", backgroundColor: "#1e1e2f" }}
+        >
 
-        {/* Search Bar */}
-        <div className="mb-4 d-flex justify-content-center">
-          <form onSubmit={handleSearchSubmit} className="d-flex" style={{ width: "100%", maxWidth: "600px" }}>
-            <input 
-                type="text" 
-                className="form-control me-2" 
-                placeholder="Search NVD database by CVE ID or keyword..." 
+          {/* Search Bar */}
+          <div className="mb-4 d-flex justify-content-center">
+            <form onSubmit={handleSearchSubmit} className="d-flex" style={{ width: "100%", maxWidth: "600px" }}>
+              <input
+                type="text"
+                className="form-control me-2"
+                placeholder="Search NVD database by CVE ID or keyword..."
                 value={searchInput}
                 onChange={handleSearchChange}
                 style={{ backgroundColor: "#2b2b3c", color: "white", border: "1px solid #4d4d5b" }}
-            />
-            <button type="submit" className="btn btn-primary shadow-0" disabled={loading}>
-              {loading ? "Searching..." : "Search"}
-            </button>
-          </form>
-        </div>
-
-        {/* Status Messages */}
-        {error && (
-            <div className="alert alert-danger text-center" role="alert">
-                {error}
-            </div>
-        )}
-
-        {loading && !error && (
-            <div className="text-center text-white my-5">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </div>
-                <p className="mt-3">Querying NVD Database...</p>
-            </div>
-        )}
-
-        {!loading && !error && cveData.length === 0 && (
-            <div className="text-center text-white my-5">
-                <p>No CVEs found matching your search. Try broadening your keywords.</p>
-            </div>
-        )}
-
-        {/* Pagination Controls */}
-        {!loading && !error && cveData.length > 0 && (
-          <div className="d-flex justify-content-center align-items-center mb-3">
-            <button
-              className="btn btn-sm btn-light me-2"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-            >
-              Previous
-            </button>
-
-            <span className="text-white small">
-              Page {currentPage} of {totalPages || 1}
-            </span>
-
-            <button
-              className="btn btn-sm btn-light ms-2"
-              disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              Next
-            </button>
+              />
+              <button type="submit" className="btn btn-primary shadow-0" disabled={loading}>
+                {loading ? "Searching..." : "Search"}
+              </button>
+            </form>
           </div>
-        )}
 
-      <div className="row">
-        {!loading && !error && currentItems.map((item) => {
-          const cve = item.cve;
+          {/* Status Messages */}
+          {error && (
+            <div className="alert alert-danger text-center" role="alert">
+              {error}
+            </div>
+          )}
 
-          const score =
-            cve.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore ||
-            cve.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore ||
-            cve.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore;
+          {loading && !error && (
+            <div className="text-center text-white my-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3">Querying NVD Database...</p>
+            </div>
+          )}
 
-          const severity = getSeverity(score);
+          {!loading && !error && cveData.length === 0 && (
+            <div className="text-center text-white my-5">
+              <p>No CVEs found matching your search. Try broadening your keywords.</p>
+            </div>
+          )}
 
-          return (
-            <div className="col-md-6 col-lg-3 mb-3" key={cve.id}>
-              <div
-                className="card h-100 border-0 cve-card"
-                style={{
-                  backgroundColor: "#2b2b3c",
-                  color: "#e6e6e6",
-                  cursor: "default"
-                }}
+          {/* Pagination Controls */}
+          {!loading && !error && cveData.length > 0 && (
+            <div className="d-flex justify-content-center align-items-center mb-3">
+              <button
+                className="btn btn-sm btn-light me-2"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
               >
-                {/* CVE Header */}
-                <div
-                  style={{
-                    backgroundColor: "#12121a",
-                    textAlign: "center",
-                    padding: "4px",
-                    fontSize: "0.85rem",
-                    fontWeight: "bold",
-                    letterSpacing: "0.5px",
-                    whiteSpace: "nowrap"
-                  }}
-                >
-                  {cve.id}
-                </div>
+                Previous
+              </button>
 
-                <div className="card-body p-3 d-flex flex-column">
+              <span className="text-white small">
+                Page {currentPage} of {totalPages || 1}
+              </span>
 
-                  {/* Severity */}
-                  <div>
-                    <span
-                      style={{
-                        backgroundColor: severity.color,
-                        fontSize: "0.7rem",
-                        padding: "3px 6px",
-                        borderRadius: "4px",
-                        fontWeight: "bold"
-                      }}
-                    >
-                      {severity.label} {score ? `(${score})` : ""}
-                    </span>
-                  </div>
+              <button
+                className="btn btn-sm btn-light ms-2"
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                Next
+              </button>
+            </div>
+          )}
 
-                  {/* Description */}
-                  <p
+          <div className="row">
+            {!loading && !error && currentItems.map((item) => {
+              const cve = item.cve;
+
+              const score =
+                cve.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore ||
+                cve.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore ||
+                cve.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore;
+
+              const severity = getSeverity(score);
+
+              return (
+                <div className="col-md-6 col-lg-3 mb-3" key={cve.id}>
+                  <div
+                    className="card h-100 border-0 cve-card"
                     style={{
-                      fontSize: "0.8rem",
-                      marginTop: "10px",
-                      marginBottom: "15px"
+                      backgroundColor: "#2b2b3c",
+                      color: "#e6e6e6",
+                      cursor: "default"
                     }}
                   >
-                    {cve.descriptions[0]?.value}
-                  </p>
-
-                  {/* NVD Link anchored to bottom */}
-                  <div className="mt-auto">
-                    <a
-                      href={`https://nvd.nist.gov/vuln/detail/${cve.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    {/* CVE Header */}
+                    <div
                       style={{
+                        backgroundColor: "#12121a",
+                        textAlign: "center",
+                        padding: "4px",
                         fontSize: "0.85rem",
-                        color: "#7aa2ff",
-                        textDecoration: "none",
-                        fontWeight: "500",
-                        cursor: "pointer"
+                        fontWeight: "bold",
+                        letterSpacing: "0.5px",
+                        whiteSpace: "nowrap"
                       }}
                     >
-                      View on NVD →
-                    </a>
-                  </div>
+                      {cve.id}
+                    </div>
 
+                    <div className="card-body p-3 d-flex flex-column">
+
+                      {/* Severity */}
+                      <div>
+                        <span
+                          style={{
+                            backgroundColor: severity.color,
+                            fontSize: "0.7rem",
+                            padding: "3px 6px",
+                            borderRadius: "4px",
+                            fontWeight: "bold"
+                          }}
+                        >
+                          {severity.label} {score ? `(${score})` : ""}
+                        </span>
+                      </div>
+
+                      {/* Description */}
+                      <p
+                        style={{
+                          fontSize: "0.8rem",
+                          marginTop: "10px",
+                          marginBottom: "15px"
+                        }}
+                      >
+                        {cve.descriptions[0]?.value}
+                      </p>
+
+                      {/* NVD Link anchored to bottom */}
+                      <div className="mt-auto">
+                        <a
+                          href={`https://nvd.nist.gov/vuln/detail/${cve.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: "0.85rem",
+                            color: "#7aa2ff",
+                            textDecoration: "none",
+                            fontWeight: "500",
+                            cursor: "pointer"
+                          }}
+                        >
+                          View on NVD →
+                        </a>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+
+        </div>
       </div>
-    </div>
     </div>
   );
 };

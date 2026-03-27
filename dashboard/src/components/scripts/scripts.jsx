@@ -3,7 +3,7 @@ import { HostContext } from '../../context/HostContext';
 import { MDBBtn, MDBInput, MDBTextArea, MDBCard, MDBCardBody, MDBCardTitle } from 'mdb-react-ui-kit';
 
 const Scripts = () => {
-  const { currentHost, theme } = useContext(HostContext);
+  const { currentHost, theme, apiBase } = useContext(HostContext);
   const [loading, setLoading] = useState(false);
 
   // States for the 4 containers
@@ -24,7 +24,7 @@ const Scripts = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/commands', {
+      const res = await fetch(`${apiBase}/api/commands`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

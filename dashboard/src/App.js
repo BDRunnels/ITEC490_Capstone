@@ -1,6 +1,8 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 
+import { HostContext } from "./context/HostContext";
+import Login from "./components/login/login";
 import Navigation from "./components/navigation/navigation";
 import CVE from "./components/cve/cve";
 import Toggler from "./components/modeToggler/modeToggler";
@@ -15,6 +17,12 @@ import About from "./components/about/about";
 import Admin from "./components/admin/admin";
 
 const App = () => {
+    const { isLoggedIn } = useContext(HostContext);
+
+    if (!isLoggedIn) {
+        return <Login />;
+    }
+
     return (
         <Fragment>
             <Navigation />
